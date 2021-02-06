@@ -24,13 +24,13 @@ public class TestCase {
     private List<Integer> summands;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TEACHER_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "TEST_SUITE_ID", referencedColumnName = "ID")
     private TestSuite testSuite;
 
     private String descrption;
 
     @Enumerated(EnumType.STRING)
-    private TestResult testResult;
+    private TestResult lastTestResult;
 
 
 }

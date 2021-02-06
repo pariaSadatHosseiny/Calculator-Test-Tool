@@ -17,7 +17,7 @@ public class TestSuite {
 
     private String name;
 
-    @OneToMany(mappedBy = "testSuite")
+    @OneToMany(mappedBy = "testSuite",cascade=CascadeType.ALL, orphanRemoval=true)
     private List<TestCase> testCases;
 
 
