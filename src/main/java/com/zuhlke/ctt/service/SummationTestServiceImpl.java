@@ -2,7 +2,7 @@ package com.zuhlke.ctt.service;
 
 import com.zuhlke.ctt.exceptions.RestCustomException;
 import com.zuhlke.ctt.model.dto.*;
-import com.zuhlke.ctt.model.entities.TestCase;
+import com.zuhlke.ctt.model.entities.SummationTest;
 import com.zuhlke.ctt.model.entities.TestSuite;
 import com.zuhlke.ctt.model.enums.TestResult;
 import com.zuhlke.ctt.provider.cmw.client.CmwWebServices;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-/**
+/*
  * Created by  paria
  * Date:       2/6/2021
  * Time:       10:25 PM
@@ -62,32 +62,32 @@ public class SummationTestServiceImpl implements SummationTestService {
         RunTestResponseDto result = new RunTestResponseDto();
 
         ////-1  check if test case Exists
-        TestCase testCase = testCaseRepository.findById(id)
+        SummationTest summationTest = testCaseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find resource"));
         ////-2 try to call cmw rest api and compare the result with expected result of test case
         try {
-            CmwSummationResponse response = cmwWebServices.summation(new CmwSummationRequest(testCase.getSummands()));
+            CmwSummationResponse response = cmwWebServices.summation(new CmwSummationRequest(summationTest.getSummands()));
             // check if result sum is equal to expected sum return success
-            if (response.getSum().equals(testCase.getExpectedResult())) {
+            if (response.getSum().equals(summationTest.getExpectedResult())) {
                 result.setTestResult(TestResult.SUCCESS);
             } else { // check if result sum is not equal to expected sum return failed
                 result.setTestResult(TestResult.FAILED);
                 result.setMessage(
-                        String.format("Test Failed .Expected Result:{} Actual Result:{}", testCase.getExpectedResult(), response.getSum().toString()));
+                        String.format("Test Failed .Expected Result:{} Actual Result:{}", summationTest.getExpectedResult(), response.getSum().toString()));
             }
         } catch (RestCustomException e) { //as handled Exceptions in cmwWebservices it can throw just this kind of Exception
-            testCase.setErrorMessage(e.getMessage());
-            testCase.setLastTestResult(TestResult.ERROR);
+            summationTest.setErrorMessage(e.getMessage());
+            summationTest.setLastTestResult(TestResult.ERROR);
             result.setTestResult(TestResult.ERROR);
             result.setMessage(
                     String.format("Test Faced with an Error. please call Customer service to check cause . Details : {}", e.getMessage()));
 //            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        result.setTestID(testCase.getId());
-        result.setTestName(testCase.getName());
+        result.setTestID(summationTest.getId());
+        result.setTestName(summationTest.getName());
 
         //save new result to test case
-        testCaseRepository.save(testCase);
+        testCaseRepository.save(summationTest);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -107,9 +107,9 @@ public class SummationTestServiceImpl implements SummationTestService {
         //TODO check if test suite contains zero test case return suitable response to user
         List<RunTestResponseDto> result = new ArrayList<>();
         //TODO can i use streaming here?
-        for (TestCase testCase : testSuite.getTestCases()) {
+        for (SummationTest summationTest : testSuite.getSummationTests()) {
             // call run singleTestCase for each one of tests in test suite
-            RunTestResponseDto runSingleTestResult = this.runSingleTestCase(testCase.getId()).getBody();
+            RunTestResponseDto runSingleTestResult = this.runSingleTestCase(summationTest.getId()).getBody();
             result.add(runSingleTestResult);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -127,8 +127,8 @@ public class SummationTestServiceImpl implements SummationTestService {
 
     @Override
     public ResponseEntity<List<TestCaseDto>> getAllTestCases() {
-        List<TestCase> allTestCases = (List<TestCase>) testCaseRepository.findAll();
-        List<TestCaseDto> testCaseDtos = allTestCases.stream().map(objA -> {
+        List<SummationTest> allSummationTests = (List<SummationTest>) testCaseRepository.findAll();
+        List<TestCaseDto> testCaseDtos = allSummationTests.stream().map(objA -> {
             return new TestCaseDto(objA);
         }).collect(Collectors.toList());
 
@@ -137,9 +137,9 @@ public class SummationTestServiceImpl implements SummationTestService {
 
     @Override
     public ResponseEntity<TestCaseDto> getSingleTestCase(Long id) {
-        TestCase testCase = testCaseRepository.findById(id)
+        SummationTest summationTest = testCaseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        return new ResponseEntity<>(new TestCaseDto(testCase), HttpStatus.OK);
+        return new ResponseEntity<>(new TestCaseDto(summationTest), HttpStatus.OK);
     }
 
     @Override

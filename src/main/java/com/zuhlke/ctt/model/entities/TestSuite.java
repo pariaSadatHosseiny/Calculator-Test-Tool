@@ -5,6 +5,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+/* Created by  paria
+ * Date:       2/7/2021
+ * Time:       10:31 PM
+ */
 
 @Entity
 @Getter
@@ -18,7 +22,7 @@ public class TestSuite {
     private String name;
 
     @OneToMany(mappedBy = "testSuite",cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<TestCase> testCases;
+    private List<SummationTest> summationTests;
 
 
 
