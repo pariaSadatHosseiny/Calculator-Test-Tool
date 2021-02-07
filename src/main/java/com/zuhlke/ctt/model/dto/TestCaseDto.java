@@ -1,7 +1,6 @@
 package com.zuhlke.ctt.model.dto;
 
 import com.zuhlke.ctt.model.entities.TestCase;
-import com.zuhlke.ctt.model.entities.TestSuite;
 import com.zuhlke.ctt.model.enums.TestResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +25,7 @@ public class TestCaseDto {
         this.expectedResult = testCase.getExpectedResult();
         this.summands = testCase.getSummands();
         this.testSuite = testCase.getTestSuite()!=null ?new TestSuiteDto(testCase.getTestSuite()) : null;
-        this.descrption = testCase.getDescrption();
+        this.descrption = testCase.getErrorMessage();
         this.lastTestResult = testCase.getLastTestResult();
     }
 

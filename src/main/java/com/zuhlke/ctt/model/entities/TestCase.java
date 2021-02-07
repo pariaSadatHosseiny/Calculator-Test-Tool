@@ -27,7 +27,7 @@ public class TestCase {
     @JoinColumn(name = "TEST_SUITE_ID", referencedColumnName = "ID")
     private TestSuite testSuite;
 
-    private String descrption;
+    private String errorMessage;
 
     @Enumerated(EnumType.STRING)
     private TestResult lastTestResult;
