@@ -19,9 +19,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SummationTest2 extends TestCase<Long, TestResult, TestSuite> {
+public class MultiplicationTest extends TestCase<Integer, TestResult, TestSuite> {
 
-    private int expectedResult;
+    private Long expectedResult;
     @ElementCollection
     private List<Integer> summands;
 

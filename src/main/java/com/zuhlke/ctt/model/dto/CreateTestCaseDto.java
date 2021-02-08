@@ -3,7 +3,7 @@ package com.zuhlke.ctt.model.dto;
 /**
  * Created by  paria
  * Date:       2/6/2021
- * Time:       10:47 PM
+ * Time:       10:43 PM
  */
-public class CreateTestSuiteRequestDto {
+public class CreateTestCaseDto {
 }

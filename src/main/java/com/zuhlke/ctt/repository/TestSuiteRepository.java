@@ -8,7 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  * Time:       10:31 PM
  */
 
-@RepositoryRestResource(collectionResourceRel = "testsuites", path = "testsuites")
+@RepositoryRestResource(collectionResourceRel = "testSuites", path = "testSuites")
 public interface TestSuiteRepository extends JpaRepository<TestSuite,Long> {
 
 }

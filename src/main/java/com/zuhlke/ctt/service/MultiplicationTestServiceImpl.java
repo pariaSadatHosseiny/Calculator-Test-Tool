@@ -35,14 +35,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
  *
  * @author p.hosseini
  */
-@Service("SummationTestService")
-public class SummationTestServiceImpl implements SummationTestService,TestCaseService {
+@Service("MultiplicationTestService")
+public class MultiplicationTestServiceImpl implements TestCaseService {
 
     private final SummationTestRepository summationTestRepository;
     private final TestSuiteRepository testSuiteRepository;
     private final CmwWebServices cmwWebServices;
 
-    public SummationTestServiceImpl(SummationTestRepository summationTestRepository, TestSuiteRepository testSuiteRepository, CmwWebServices cmwWebServices) {
+    public MultiplicationTestServiceImpl(SummationTestRepository summationTestRepository, TestSuiteRepository testSuiteRepository, CmwWebServices cmwWebServices) {
         this.summationTestRepository = summationTestRepository;
         this.testSuiteRepository = testSuiteRepository;
         this.cmwWebServices = cmwWebServices;
@@ -115,78 +115,5 @@ public class SummationTestServiceImpl implements SummationTestService,TestCaseSe
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<List<TestSuiteDto>> getAllTestSuites() {
-        List<TestSuite> alltestSuites = testSuiteRepository.findAll();
-        List<TestSuiteDto> testSuiteDtos = alltestSuites.stream().map(objA -> {
-            return new TestSuiteDto(objA);
-        }).collect(Collectors.toList());
-
-        return new ResponseEntity<>(testSuiteDtos, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<List<TestCaseDto>> getAllTestCases() {
-        List<SummationTest> allSummationTests = (List<SummationTest>) summationTestRepository.findAll();
-        List<TestCaseDto> testCaseDtos = allSummationTests.stream().map(objA -> {
-            return new TestCaseDto(objA);
-        }).collect(Collectors.toList());
-
-        return new ResponseEntity<>(testCaseDtos, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<TestCaseDto> getSingleTestCase(Long id) {
-        SummationTest summationTest = summationTestRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        return new ResponseEntity<>(new TestCaseDto(summationTest), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<TestSuiteDto> getSingleTestSuite(Long id) {
-        TestSuite testSuite = testSuiteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        return new ResponseEntity<>(new TestSuiteDto(testSuite), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<TestCaseDto> createNewTestCase(CreateTestCaseDto testCase) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<TestSuiteDto> createNewTestSuite(CreateTestSuiteDto testSuite) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<TestCaseDto> patchUpdateTestCase(Long id, CreateTestCaseDto testCase) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<TestSuiteDto> patchUpdateTestSuite(Long id, CreateTestSuiteDto testSuite) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<TestCaseDto> putUpdateTestCase(Long id, CreateTestCaseDto testCase) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<TestSuiteDto> putUpdateTestSuite(Long id, CreateTestSuiteDto testSuite) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<TestCaseDto> deleteTestCase(Long id) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<TestSuiteDto> deleteTestSuite(Long id) {
-        return null;
-    }
 
 }

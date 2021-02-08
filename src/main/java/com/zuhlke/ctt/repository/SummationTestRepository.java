@@ -1,7 +1,6 @@
 package com.zuhlke.ctt.repository;
 
 import com.zuhlke.ctt.model.entities.SummationTest;
-import com.zuhlke.ctt.model.entities.SummationTest2;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -10,7 +9,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  * Time:       10:31 PM
  */
 
-@RepositoryRestResource(collectionResourceRel = "testcases", path = "testcases")
-public interface TestCaseRepository2 extends CrudRepository<SummationTest2,Long> {
+@RepositoryRestResource(collectionResourceRel = "summation", path = "summation")
+public interface SummationTestRepository extends CrudRepository<SummationTest,Long> {
 
 }

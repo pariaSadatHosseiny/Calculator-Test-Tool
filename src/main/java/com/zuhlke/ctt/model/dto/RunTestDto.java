@@ -9,7 +9,7 @@ import lombok.Data;
  * Time:       9:55 PM
  */
 @Data
-public class RunTestResponseDto {
+public class RunTestDto {
     private Long testID;
     private String testName;
     private TestResult testResult;

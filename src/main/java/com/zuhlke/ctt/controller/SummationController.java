@@ -2,8 +2,11 @@ package com.zuhlke.ctt.controller;
 
 import com.zuhlke.ctt.model.dto.*;
 import com.zuhlke.ctt.service.SummationTestService;
+import com.zuhlke.ctt.service.TestCaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,23 +22,25 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping(path = {"/api/v1/summation/"}, produces = APPLICATION_JSON_VALUE)
-public class SummationTestController {
+public class SummationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SummationTestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SummationController.class);
+    private final TestCaseService testCaseService;
     private final SummationTestService summationTestService;
 
-    public SummationTestController(SummationTestService summationTestService) {
+    public SummationController(@Qualifier("SummationTestService") TestCaseService testCaseService, SummationTestService summationTestService) {
+        this.testCaseService = testCaseService;
         this.summationTestService = summationTestService;
     }
 
 
     @RequestMapping(value = "testCases/run/{id}", method = RequestMethod.GET)
-    public ResponseEntity<RunTestResponseDto> runSingleTestCase(@PathVariable Long id) throws Throwable {
-        return summationTestService.runSingleTestCase(id);
+    public ResponseEntity<RunTestDto> runSingleTestCase(@PathVariable Long id) throws Throwable {
+        return testCaseService.runSingleTestCase(id);
     }
     @RequestMapping(value = "testSuites/run/{id}", method = RequestMethod.GET)
-    public ResponseEntity<List<RunTestResponseDto>> runTestSuite(@PathVariable Long id) throws Throwable {
-        return summationTestService.runTestSuite(id);
+    public ResponseEntity<List<RunTestDto>> runTestSuite(@PathVariable Long id) throws Throwable {
+        return testCaseService.runTestSuite(id);
     }
 
 
@@ -61,36 +66,36 @@ public class SummationTestController {
 
 
     @RequestMapping(value = "testCases", method = RequestMethod.POST)
-    public ResponseEntity<TestCaseDto> createTestCase(@RequestBody CreateTestCaseRequestDto testCase) {
+    public ResponseEntity<TestCaseDto> createTestCase(@RequestBody CreateTestCaseDto testCase) {
         return summationTestService.createNewTestCase(testCase);
     }
 
     @RequestMapping(value = "testSuites", method = RequestMethod.POST)
-    public ResponseEntity<TestSuiteDto> createTestSuite(@RequestBody CreateTestSuiteRequestDto testSuite) {
+    public ResponseEntity<TestSuiteDto> createTestSuite(@RequestBody CreateTestSuiteDto testSuite) {
         return summationTestService.createNewTestSuite(testSuite);
     }
 
 
     @RequestMapping(value = "testCases/{id}", method = RequestMethod.PATCH)
-    public ResponseEntity<TestCaseDto> patchUpdateTestCase(@PathVariable Long id, @RequestBody CreateTestCaseRequestDto testCase) {
+    public ResponseEntity<TestCaseDto> patchUpdateTestCase(@PathVariable Long id, @RequestBody CreateTestCaseDto testCase) {
         return summationTestService.patchUpdateTestCase(id, testCase);
     }
 
 
     @RequestMapping(value = "testSuites/{id}", method = RequestMethod.PATCH)
-    public ResponseEntity<TestSuiteDto> patchUpdateTestSuite(@PathVariable Long id, @RequestBody CreateTestSuiteRequestDto testSuite) {
+    public ResponseEntity<TestSuiteDto> patchUpdateTestSuite(@PathVariable Long id, @RequestBody CreateTestSuiteDto testSuite) {
         return summationTestService.patchUpdateTestSuite(id, testSuite);
     }
 
 
     @RequestMapping(value = "testCases/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<TestCaseDto> putUpdateTestCase(@PathVariable Long id, @RequestBody CreateTestCaseRequestDto testCase) {
+    public ResponseEntity<TestCaseDto> putUpdateTestCase(@PathVariable Long id, @RequestBody CreateTestCaseDto testCase) {
         return summationTestService.putUpdateTestCase(id, testCase);
     }
 
 
     @RequestMapping(value = "testSuites/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<TestSuiteDto> putUpdateTestSuite(@PathVariable Long id, @RequestBody CreateTestSuiteRequestDto testSuite) {
+    public ResponseEntity<TestSuiteDto> putUpdateTestSuite(@PathVariable Long id, @RequestBody CreateTestSuiteDto testSuite) {
         return summationTestService.putUpdateTestSuite(id, testSuite);
     }
 

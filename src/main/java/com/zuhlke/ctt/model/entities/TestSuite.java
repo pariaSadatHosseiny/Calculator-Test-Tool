@@ -1,5 +1,6 @@
 package com.zuhlke.ctt.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,10 +18,12 @@ public class TestSuite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     private String name;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @OneToMany(mappedBy = "testSuite",cascade=CascadeType.ALL, orphanRemoval=true)
     private List<SummationTest> summationTests;
 

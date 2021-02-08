@@ -1,10 +1,13 @@
 package com.zuhlke.ctt.controller;
 
-import com.zuhlke.ctt.model.dto.RunTestResponseDto;
-import com.zuhlke.ctt.repository.TestCaseRepository;
+import com.zuhlke.ctt.model.dto.RunTestDto;
+import com.zuhlke.ctt.repository.SummationTestRepository;
 import com.zuhlke.ctt.repository.TestSuiteRepository;
 import com.zuhlke.ctt.service.SummationTestService;
+import com.zuhlke.ctt.service.TestCaseService;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,28 +23,31 @@ import java.util.List;
  * to swagger ui you can use both @RepositoryRestController and @RestController
  */
 @RepositoryRestController
-public class SummationTestController2 {
+public class MultiplicationController {
     /**
      * These dependencies are not used yet but they are useful when we want to custom one of the SDR Api CRUD methods
      */
-    private final TestCaseRepository testCaseRepository;
+
+    private final TestCaseService testCaseService;
+    private final SummationTestRepository summationTestRepository;
     private final TestSuiteRepository testSuiteRepository;
     private final SummationTestService summationTestService;
 
     @Autowired
-    public SummationTestController2(TestCaseRepository testCaseRepository, TestSuiteRepository testSuiteRepository, SummationTestService summationTestService) {
-        this.testCaseRepository = testCaseRepository;
+    public MultiplicationController(@Qualifier("MultiplicationTestService") TestCaseService testCaseService, SummationTestRepository summationTestRepository, TestSuiteRepository testSuiteRepository, SummationTestService summationTestService) {
+        this.testCaseService = testCaseService;
+        this.summationTestRepository = summationTestRepository;
         this.testSuiteRepository = testSuiteRepository;
         this.summationTestService = summationTestService;
     }
 
     @RequestMapping(value = "testcases/run/{id}", method = RequestMethod.GET)
-    public ResponseEntity<RunTestResponseDto> runSingleTestCase(@PathVariable Long id) throws Throwable {
-        return summationTestService.runSingleTestCase(id);
+    public ResponseEntity<RunTestDto> runSingleTestCase(@PathVariable Long id) throws Throwable {
+        return testCaseService.runSingleTestCase(id);
     }
     @RequestMapping(value = "testsuites/run/{id}", method = RequestMethod.GET)
-    public ResponseEntity<List<RunTestResponseDto>> runTestSuite(@PathVariable Long id) throws Throwable {
-        return summationTestService.runTestSuite(id);
+    public ResponseEntity<List<RunTestDto>> runTestSuite(@PathVariable Long id) throws Throwable {
+        return testCaseService.runTestSuite(id);
     }
 
     @GetMapping("testCases/test")

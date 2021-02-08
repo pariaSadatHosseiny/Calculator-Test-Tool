@@ -1,6 +1,7 @@
 package com.zuhlke.ctt.config;
 
 import com.zuhlke.ctt.model.entities.SummationTest;
+import com.zuhlke.ctt.model.entities.MultiplicationTest;
 import com.zuhlke.ctt.model.entities.TestCase;
 import com.zuhlke.ctt.model.entities.TestSuite;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -8,8 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 /*
@@ -26,6 +25,13 @@ import org.springframework.web.client.RestTemplate;
 public class AppGeneralConfiguration implements RepositoryRestConfigurer {
     //for application Configuration
 
+    /**
+     * here in this Bean a reference of restTemplate is creating and you can use it
+     * based on autowiring by name and using @Qualifier annotations
+     * it is possible to use rest template builder to create a rest template reference with
+     * custom Error handling as you want
+     * @return RestTemplate instance
+     */
     @Bean
     @Qualifier("generalRestTemplate")
     public RestTemplate restTemplateGeneral() {
@@ -38,17 +44,7 @@ public class AppGeneralConfiguration implements RepositoryRestConfigurer {
         config.exposeIdsFor(TestCase.class);
         config.exposeIdsFor(TestSuite.class);
         config.exposeIdsFor(SummationTest.class);
-    }
-
-    /**
-     * sets timeout config for Rest template References
-     */
-    private ClientHttpRequestFactory getClientHttpRequestFactory() {
-        int timeout = 5000;
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
-                = new HttpComponentsClientHttpRequestFactory();
-        clientHttpRequestFactory.setConnectTimeout(timeout);
-        return clientHttpRequestFactory;
+        config.exposeIdsFor(MultiplicationTest.class);
     }
 
 

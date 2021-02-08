@@ -15,9 +15,9 @@ public interface SummationTestService {
      * @param id
      * @return
      */
-    public ResponseEntity<RunTestResponseDto> runSingleTestCase(Long id);
+    public ResponseEntity<RunTestDto> runSingleTestCase(Long id);
 
-    public ResponseEntity<List<RunTestResponseDto>> runTestSuite(Long id);
+    public ResponseEntity<List<RunTestDto>> runTestSuite(Long id);
 
     public ResponseEntity<List<TestCaseDto>> getAllTestCases();
 
@@ -27,17 +27,17 @@ public interface SummationTestService {
 
     public ResponseEntity<TestSuiteDto> getSingleTestSuite(Long id);
 
-    public ResponseEntity<TestCaseDto> createNewTestCase(CreateTestCaseRequestDto testCase);
+    public ResponseEntity<TestCaseDto> createNewTestCase(CreateTestCaseDto testCase);
 
-    public ResponseEntity<TestSuiteDto> createNewTestSuite(CreateTestSuiteRequestDto testSuite);
+    public ResponseEntity<TestSuiteDto> createNewTestSuite(CreateTestSuiteDto testSuite);
 
-    public ResponseEntity<TestCaseDto> patchUpdateTestCase(Long id, CreateTestCaseRequestDto testCase);
+    public ResponseEntity<TestCaseDto> patchUpdateTestCase(Long id, CreateTestCaseDto testCase);
 
-    public ResponseEntity<TestSuiteDto> patchUpdateTestSuite(Long id, CreateTestSuiteRequestDto testSuite);
+    public ResponseEntity<TestSuiteDto> patchUpdateTestSuite(Long id, CreateTestSuiteDto testSuite);
 
-    public ResponseEntity<TestCaseDto> putUpdateTestCase(Long id, CreateTestCaseRequestDto testCase);
+    public ResponseEntity<TestCaseDto> putUpdateTestCase(Long id, CreateTestCaseDto testCase);
 
-    public ResponseEntity<TestSuiteDto> putUpdateTestSuite(Long id, CreateTestSuiteRequestDto testSuite);
+    public ResponseEntity<TestSuiteDto> putUpdateTestSuite(Long id, CreateTestSuiteDto testSuite);
 
     public ResponseEntity<TestCaseDto> deleteTestCase(Long id);
 

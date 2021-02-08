@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Custom Exception which returns exception code and a message
+ * Custom Exception which returns exception code and a message with the exception cause
  */
 
 @Data

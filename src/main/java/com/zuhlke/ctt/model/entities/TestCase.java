@@ -4,11 +4,15 @@ package com.zuhlke.ctt.model.entities;/*
  * Time:       10:31 PM
  */
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.zuhlke.ctt.model.enums.TestResult;
 import lombok.Data;
 import net.bytebuddy.implementation.bind.annotation.SuperMethod;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * it represents a testCase Entity which is super class for all types
@@ -26,15 +30,30 @@ import javax.persistence.*;
 public class TestCase<T1,T2,T3> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private T1 id;
     private String name;
-    private String errorMessage;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "created_on")
+    @CreationTimestamp
+    private LocalDateTime createdOn;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "updated_on")
+    @UpdateTimestamp
+    private LocalDateTime updatedOn;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Enumerated(EnumType.STRING)
     private T2 lastTestResult;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEST_SUITE_ID", referencedColumnName = "ID")
     private T3 testSuite;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String errorMessage;
     //TODO where to save the rest urls of cmw rest api for each testcase? here or in config file
     //private String restUrl;
 }
