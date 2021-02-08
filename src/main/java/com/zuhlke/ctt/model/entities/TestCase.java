@@ -6,6 +6,7 @@ package com.zuhlke.ctt.model.entities;/*
 
 import com.zuhlke.ctt.model.enums.TestResult;
 import lombok.Data;
+import net.bytebuddy.implementation.bind.annotation.SuperMethod;
 
 import javax.persistence.*;
 
@@ -18,21 +19,21 @@ import javax.persistence.*;
  * @author paria
  */
 
-@Entity
+@MappedSuperclass
 @Data
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="Test_type")
-public class TestCase {
+public class TestCase<T1,T2,T3> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private T1 id;
     private String name;
     private String errorMessage;
     @Enumerated(EnumType.STRING)
-    private TestResult lastTestResult;
+    private T2 lastTestResult;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEST_SUITE_ID", referencedColumnName = "ID")
-    private TestSuite testSuite;
+    private T3 testSuite;
 
     //TODO where to save the rest urls of cmw rest api for each testcase? here or in config file
     //private String restUrl;

@@ -1,55 +1,109 @@
 package com.zuhlke.ctt.controller;
 
-import com.zuhlke.ctt.model.dto.RunTestResponseDto;
-import com.zuhlke.ctt.repository.TestCaseRepository;
-import com.zuhlke.ctt.repository.TestSuiteRepository;
+import com.zuhlke.ctt.model.dto.*;
 import com.zuhlke.ctt.service.SummationTestService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
 /**
- * how ever in spring data Rest documents is mentioned that we use #RepositoryRestController#
- * to replace a SDR rest method Impl but to stick to Pure SDR I wrote this Controller as you see bellow
- * Note : as I searched We can use Spring MVC with SDR when we have to implement some logic in our rest API method
+ * Created by  paria
+ * Date:       2/6/2021
+ * Time:       9:11 PM
  */
-@RepositoryRestController
+
+@RestController
+@RequestMapping(path = {"/api/v1/summation/"}, produces = APPLICATION_JSON_VALUE)
 public class SummationTestController {
-    /**
-     * These dependencies are not used yet but they are useful when we want to custom one of the SDR Api CRUD methods
-     */
-    private final TestCaseRepository testCaseRepository;
-    private final TestSuiteRepository testSuiteRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(SummationTestController.class);
     private final SummationTestService summationTestService;
 
-    @Autowired
-    public SummationTestController(TestCaseRepository testCaseRepository, TestSuiteRepository testSuiteRepository, SummationTestService summationTestService) {
-        this.testCaseRepository = testCaseRepository;
-        this.testSuiteRepository = testSuiteRepository;
+    public SummationTestController(SummationTestService summationTestService) {
         this.summationTestService = summationTestService;
     }
 
-    @RequestMapping(value = "testcases/run/{id}", method = RequestMethod.GET)
+
+    @RequestMapping(value = "testCases/run/{id}", method = RequestMethod.GET)
     public ResponseEntity<RunTestResponseDto> runSingleTestCase(@PathVariable Long id) throws Throwable {
         return summationTestService.runSingleTestCase(id);
     }
-    @RequestMapping(value = "testsuites/run/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "testSuites/run/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<RunTestResponseDto>> runTestSuite(@PathVariable Long id) throws Throwable {
         return summationTestService.runTestSuite(id);
     }
 
-    @GetMapping("testcases/test")
-    @ResponseBody
-    public ResponseEntity<?> hello(){
-        return ResponseEntity.ok("Hellllloooooo sample for test case");
+
+    @RequestMapping(value = "testCases", method = RequestMethod.GET)
+    public ResponseEntity<List<TestCaseDto>> getAllTestCases() throws Throwable {
+        return summationTestService.getAllTestCases();
     }
-    @GetMapping("testsuites/hello")
-    @ResponseBody
-    public ResponseEntity<?> hello2(){
-        return ResponseEntity.ok("Hellllloooooo sample for test suite");
+
+
+    @RequestMapping(value = "testSuites", method = RequestMethod.GET)
+    public ResponseEntity<List<TestSuiteDto>> getAllTestSuites() throws Throwable {
+        return summationTestService.getAllTestSuites();
+    }
+
+    @RequestMapping(value = "testCases/{id}", method = RequestMethod.GET)
+    public ResponseEntity<TestCaseDto> getSingleTestCase(@PathVariable Long id) throws Throwable {
+        return summationTestService.getSingleTestCase(id);
+    }
+    @RequestMapping(value = "testSuites/{id}", method = RequestMethod.GET)
+    public ResponseEntity<TestSuiteDto> getSingleTestSuite(@PathVariable Long id) throws Throwable {
+        return summationTestService.getSingleTestSuite(id);
+    }
+
+
+    @RequestMapping(value = "testCases", method = RequestMethod.POST)
+    public ResponseEntity<TestCaseDto> createTestCase(@RequestBody CreateTestCaseRequestDto testCase) {
+        return summationTestService.createNewTestCase(testCase);
+    }
+
+    @RequestMapping(value = "testSuites", method = RequestMethod.POST)
+    public ResponseEntity<TestSuiteDto> createTestSuite(@RequestBody CreateTestSuiteRequestDto testSuite) {
+        return summationTestService.createNewTestSuite(testSuite);
+    }
+
+
+    @RequestMapping(value = "testCases/{id}", method = RequestMethod.PATCH)
+    public ResponseEntity<TestCaseDto> patchUpdateTestCase(@PathVariable Long id, @RequestBody CreateTestCaseRequestDto testCase) {
+        return summationTestService.patchUpdateTestCase(id, testCase);
+    }
+
+
+    @RequestMapping(value = "testSuites/{id}", method = RequestMethod.PATCH)
+    public ResponseEntity<TestSuiteDto> patchUpdateTestSuite(@PathVariable Long id, @RequestBody CreateTestSuiteRequestDto testSuite) {
+        return summationTestService.patchUpdateTestSuite(id, testSuite);
+    }
+
+
+    @RequestMapping(value = "testCases/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<TestCaseDto> putUpdateTestCase(@PathVariable Long id, @RequestBody CreateTestCaseRequestDto testCase) {
+        return summationTestService.putUpdateTestCase(id, testCase);
+    }
+
+
+    @RequestMapping(value = "testSuites/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<TestSuiteDto> putUpdateTestSuite(@PathVariable Long id, @RequestBody CreateTestSuiteRequestDto testSuite) {
+        return summationTestService.putUpdateTestSuite(id, testSuite);
+    }
+
+
+    @RequestMapping(value = "testCases/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<TestCaseDto> deleteTestCase(@PathVariable Long id) {
+        return summationTestService.deleteTestCase(id);
+    }
+
+    @RequestMapping(value = "testSuites/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<TestSuiteDto> deleteTestSuite(@PathVariable Long id) {
+        return summationTestService.deleteTestSuite(id);
     }
 
 }
+

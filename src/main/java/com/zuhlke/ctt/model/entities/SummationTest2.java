@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
 import java.util.List;
 
 /* Created by  paria
@@ -18,7 +19,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SummationTest extends TestCase<Long, TestResult, TestSuite> {
+public class SummationTest2 extends TestCase<Long, TestResult, TestSuite> {
 
     private int expectedResult;
     @ElementCollection
