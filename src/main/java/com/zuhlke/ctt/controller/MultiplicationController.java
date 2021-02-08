@@ -1,11 +1,7 @@
 package com.zuhlke.ctt.controller;
 
 import com.zuhlke.ctt.model.dto.RunTestDto;
-import com.zuhlke.ctt.repository.SummationTestRepository;
-import com.zuhlke.ctt.repository.TestSuiteRepository;
-import com.zuhlke.ctt.service.SummationTestService;
 import com.zuhlke.ctt.service.TestCaseService;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -23,22 +19,17 @@ import java.util.List;
  * to swagger ui you can use both @RepositoryRestController and @RestController
  */
 @RepositoryRestController
+@RestController
 public class MultiplicationController {
     /**
      * These dependencies are not used yet but they are useful when we want to custom one of the SDR Api CRUD methods
      */
 
     private final TestCaseService testCaseService;
-    private final SummationTestRepository summationTestRepository;
-    private final TestSuiteRepository testSuiteRepository;
-    private final SummationTestService summationTestService;
 
     @Autowired
-    public MultiplicationController(@Qualifier("MultiplicationTestService") TestCaseService testCaseService, SummationTestRepository summationTestRepository, TestSuiteRepository testSuiteRepository, SummationTestService summationTestService) {
+    public MultiplicationController(@Qualifier("MultiplicationTestService") TestCaseService testCaseService) {
         this.testCaseService = testCaseService;
-        this.summationTestRepository = summationTestRepository;
-        this.testSuiteRepository = testSuiteRepository;
-        this.summationTestService = summationTestService;
     }
 
     @RequestMapping(value = "testcases/run/{id}", method = RequestMethod.GET)

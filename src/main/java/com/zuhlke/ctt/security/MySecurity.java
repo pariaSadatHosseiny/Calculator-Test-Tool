@@ -5,8 +5,14 @@ package com.zuhlke.ctt.security;
  * Time:       10:31 PM
  */
 
-/*
+/**
  * spring security implementations
+ * this part is going to be implement
+ * we use spring security but which type ?
+ * 1-basic authenticate
+ * 2-JWT authenticate
+ * 3- oAuth authenticate
+ * @Author
  */
 public class MySecurity {
 }
