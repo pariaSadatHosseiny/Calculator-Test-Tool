@@ -19,7 +19,7 @@ import java.util.List;
  * to swagger ui you can use both @RepositoryRestController and @RestController
  */
 @RepositoryRestController
-@RestController
+//@RestController
 public class MultiplicationController {
     /**
      * These dependencies are not used yet but they are useful when we want to custom one of the SDR Api CRUD methods

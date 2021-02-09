@@ -40,9 +40,16 @@ public class CmwWebServicesImpl implements CmwWebServices{
          */
         HttpEntity<CmwSummationRequest> restRequest = new HttpEntity<>(request);
         try {
-            ResponseEntity<CmwSummationResponse> response = restTemplate.exchange("url", HttpMethod.POST, restRequest, CmwSummationResponse.class);
+            ResponseEntity<CmwSummationResponse> response = restTemplate.exchange("http://localhost:8080/api/v1/summation", HttpMethod.POST, restRequest, CmwSummationResponse.class);
             CmwSummationResponse responseBody = response.getBody();
-            return null;
+
+            ////////Mock Response
+            Integer sum = request.getSummands().stream()
+                    .reduce(0, (a, b) -> a + b);
+            responseBody.setSum(sum);
+            responseBody.setSummands(request.getSummands().toArray(new Integer[0]));
+            ////////////
+            return responseBody;
         }catch (HttpStatusCodeException ex){
             logger.error("Error response returned from  CMW rest WebServices : {}" , ex);
              throw new RestCustomException(ex.getStatusCode().toString(),ex.getResponseBodyAsString() , ex.getCause());

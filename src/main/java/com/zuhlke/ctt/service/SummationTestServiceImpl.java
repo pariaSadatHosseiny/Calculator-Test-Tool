@@ -73,14 +73,14 @@ public class SummationTestServiceImpl implements TestCaseService {
             } else { // check if result sum is not equal to expected sum return failed
                 result.setTestResult(TestResult.FAILED);
                 result.setMessage(
-                        String.format("Test Failed .Expected Result:{} Actual Result:{}", summationTest.getExpectedResult(), response.getSum().toString()));
+                        String.format("Test Failed .Expected Result:%s Actual Result:%s", summationTest.getExpectedResult(), response.getSum().toString()));
             }
         } catch (RestCustomException e) { //as handled Exceptions in cmwWebservices it can throw just this kind of Exception
             summationTest.setErrorMessage(e.getMessage());
             summationTest.setLastTestResult(TestResult.ERROR);
             result.setTestResult(TestResult.ERROR);
             result.setMessage(
-                    String.format("Test Faced with an Error. please call Customer service to check cause . Details : {}", e.getMessage()));
+                    String.format("Test Faced with an Error. please call Customer service to check cause . Details : %s", e.getMessage()));
 //            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         result.setTestID(summationTest.getId());
