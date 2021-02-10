@@ -30,11 +30,11 @@ public class SummationController {
     }
 
 
-    @RequestMapping(value = "testCases/run/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "testCases/{id}/run", method = RequestMethod.GET)
     public ResponseEntity<RunTestDto> runSingleTestCase(@PathVariable Long id) throws Throwable {
         return testCaseService.runSingleTestCase(id);
     }
-    @RequestMapping(value = "testSuites/run/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "testSuites/{id}/run", method = RequestMethod.GET)
     public ResponseEntity<List<RunTestDto>> runTestSuite(@PathVariable Long id) throws Throwable {
         return testCaseService.runTestSuite(id);
     }

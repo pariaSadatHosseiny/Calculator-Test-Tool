@@ -1,10 +1,7 @@
 package com.zuhlke.ctt.model.entities;
 
 import com.zuhlke.ctt.model.enums.TestResult;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,6 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class SummationTest extends TestCase<Long, TestResult, TestSuite> {
 
     private int expectedResult;

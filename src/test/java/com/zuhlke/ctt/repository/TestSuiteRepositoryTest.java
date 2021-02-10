@@ -40,5 +40,4 @@ class TestSuiteRepositoryTest {
         assertNotNull(queryResult.get(0));
     }
 
-//    https://dimitr.im/testing-your-rest-controllers-and-clients-with-spring
 }

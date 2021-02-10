@@ -71,7 +71,7 @@ public class SummationTestServiceImpl implements TestCaseService {
         Optional<SummationTest> summationTestResp = summationTestRepository.findById(id);
         if(!summationTestResp.isPresent()) {
             logger.error("runSingleTestCase => test case does not exist :{} ",id);
-            throw new ResponseStatusException(NOT_FOUND, "Unable to find resource");
+            throw new ResponseStatusException(NOT_FOUND, "Unable to find test case");
         }
         SummationTest summationTest  = summationTestResp.get();
         ////-2 try to call cmw rest api and compare the result with expected result of test case
