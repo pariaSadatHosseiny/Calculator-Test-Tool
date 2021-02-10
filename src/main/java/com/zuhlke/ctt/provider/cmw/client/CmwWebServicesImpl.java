@@ -52,7 +52,7 @@ public class CmwWebServicesImpl implements CmwWebServices{
             logger.debug("summation =>response returned from cmw - result :{}",responseBody.getSum());
             return responseBody;
         }catch (HttpStatusCodeException ex){
-            logger.error("summation => Error response returned from  CMW rest WebServices : {}" , ex);
+            logger.error("summation => Error response returned from  CMW rest WebServices" , ex);
              throw new RestCustomException(ex.getStatusCode().toString(),ex.getResponseBodyAsString() , ex.getCause());
         }
         catch (Exception ex){
