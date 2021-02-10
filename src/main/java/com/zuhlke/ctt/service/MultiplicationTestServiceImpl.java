@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -62,8 +63,10 @@ public class MultiplicationTestServiceImpl implements TestCaseService {
         RunTestDto result = new RunTestDto();
 
         ////-1  check if test case Exists
-        SummationTest summationTest = summationTestRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find resource"));
+        Optional<SummationTest> summationTestResp = summationTestRepository.findById(id);
+        if (!summationTestResp.isPresent())
+            throw new ResponseStatusException(NOT_FOUND, "Unable to find resource");
+        SummationTest summationTest = summationTestResp.get();
         ////-2 try to call cmw rest api and compare the result with expected result of test case
         try {
             CmwSummationResponse response = cmwWebServices.summation(new CmwSummationRequest(summationTest.getSummands()));
@@ -93,7 +96,8 @@ public class MultiplicationTestServiceImpl implements TestCaseService {
 
     /**
      * <p>runs all Test Cases in the specified test suite
-     *  and returns a list of test results . this method uses runSingleTestCase method of this class internally </p>
+     * and returns a list of test results . this method uses runSingleTestCase method of this class internally </p>
+     *
      * @param id the id number of test suite
      * @return the result of running all the test cases as a list of test results with details
      * @Since 1.0  it added in the first prototype version
@@ -102,16 +106,19 @@ public class MultiplicationTestServiceImpl implements TestCaseService {
     @Override
     public ResponseEntity<List<RunTestDto>> runTestSuite(Long id) {
         ////-1  check if test suite Exists
-        TestSuite testSuite = testSuiteRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find test Suite with mentioned Id"));
-        //TODO check if test suite contains zero test case return suitable response to user
+        Optional<TestSuite> testSuiteRep = testSuiteRepository.findById(id);
+        if(!testSuiteRep.isPresent())
+            throw new ResponseStatusException(NOT_FOUND, "Unable to find test Suite with mentioned Id");
+
+        // check if test suite contains zero test case return suitable response to user
+        TestSuite testSuite = testSuiteRep.get();
+        if(testSuite.getSummationTests()==null || testSuite.getSummationTests().isEmpty())
+            throw new ResponseStatusException(NOT_FOUND , "there is no test case for this test suite");
+
         List<RunTestDto> result = new ArrayList<>();
-        //TODO can i use streaming here?
-        for (SummationTest summationTest : testSuite.getSummationTests()) {
-            // call run singleTestCase for each one of tests in test suite
-            RunTestDto runSingleTestResult = this.runSingleTestCase(summationTest.getId()).getBody();
-            result.add(runSingleTestResult);
-        }
+
+        testSuite.getSummationTests()
+                .forEach((test) -> result.add(this.runSingleTestCase(test.getId()).getBody()));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

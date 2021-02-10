@@ -21,12 +21,11 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class CmwWebServicesImpl implements CmwWebServices{
-
+    private  final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     @Qualifier("generalRestTemplate")
     private RestTemplate restTemplate;
 
-    private static final Logger logger = LoggerFactory.getLogger(CmwWebServicesImpl.class);
 
     public CmwWebServicesImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -34,7 +33,7 @@ public class CmwWebServicesImpl implements CmwWebServices{
 
     @Override
     public CmwSummationResponse summation(CmwSummationRequest request) throws RestCustomException {
-
+        logger.debug("summation => start calling cmw summation service");
         /*
         call rest web service of Calculator Middle Ware
          */
@@ -42,20 +41,22 @@ public class CmwWebServicesImpl implements CmwWebServices{
         try {
             ResponseEntity<CmwSummationResponse> response = restTemplate.exchange("http://localhost:8080/api/v1/summation", HttpMethod.POST, restRequest, CmwSummationResponse.class);
             CmwSummationResponse responseBody = response.getBody();
-
+            //TODO comment after the CMW restfull api was Accessible
             ////////Mock Response
             Integer sum = request.getSummands().stream()
                     .reduce(0, (a, b) -> a + b);
             responseBody.setSum(sum);
             responseBody.setSummands(request.getSummands().toArray(new Integer[0]));
+            logger.info("summation =>****** using mock response instead of CMW :{}",responseBody.getSum());
             ////////////
+            logger.debug("summation =>response returned from cmw - result :{}",responseBody.getSum());
             return responseBody;
         }catch (HttpStatusCodeException ex){
-            logger.error("Error response returned from  CMW rest WebServices : {}" , ex);
+            logger.error("summation => Error response returned from  CMW rest WebServices : {}" , ex);
              throw new RestCustomException(ex.getStatusCode().toString(),ex.getResponseBodyAsString() , ex.getCause());
         }
         catch (Exception ex){
-            logger.error("Error occurred on calling CMW rest WebServices : {}" , ex);
+            logger.error("summation => Error occurred on calling CMW rest WebServices : {}" , ex);
             throw new RestCustomException("-1",ex.getMessage(),ex.getCause());
         }
     }

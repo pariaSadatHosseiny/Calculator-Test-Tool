@@ -19,17 +19,18 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * this class is to reConfig predefined modules in spring boot
+ *
  * @author paria
  */
 @Configuration
 public class AppGeneralConfiguration implements RepositoryRestConfigurer {
-    //for application Configuration
 
     /**
      * here in this Bean a reference of restTemplate is creating and you can use it
      * based on autowiring by name and using @Qualifier annotations
      * it is possible to use rest template builder to create a rest template reference with
      * custom Error handling as you want
+     *
      * @return RestTemplate instance
      */
     @Bean

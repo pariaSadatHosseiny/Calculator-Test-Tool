@@ -1,5 +1,6 @@
 package com.zuhlke.ctt.service;
 
+import com.zuhlke.ctt.controller.SummationController;
 import com.zuhlke.ctt.exceptions.RestCustomException;
 import com.zuhlke.ctt.model.dto.*;
 import com.zuhlke.ctt.model.entities.SummationTest;
@@ -10,14 +11,16 @@ import com.zuhlke.ctt.provider.cmw.dto.CmwSummationRequest;
 import com.zuhlke.ctt.provider.cmw.dto.CmwSummationResponse;
 import com.zuhlke.ctt.repository.SummationTestRepository;
 import com.zuhlke.ctt.repository.TestSuiteRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -37,6 +40,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
  */
 @Service("SummationTestService")
 public class SummationTestServiceImpl implements TestCaseService {
+
+    private  final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SummationTestRepository summationTestRepository;
     private final TestSuiteRepository testSuiteRepository;
@@ -59,11 +64,16 @@ public class SummationTestServiceImpl implements TestCaseService {
 
     @Override
     public ResponseEntity<RunTestDto> runSingleTestCase(Long id) {
+        logger.debug("runSingleTestCase => called for id :{} ",id);
         RunTestDto result = new RunTestDto();
 
         ////-1  check if test case Exists
-        SummationTest summationTest = summationTestRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find resource"));
+        Optional<SummationTest> summationTestResp = summationTestRepository.findById(id);
+        if(!summationTestResp.isPresent()) {
+            logger.error("runSingleTestCase => test case does not exist :{} ",id);
+            throw new ResponseStatusException(NOT_FOUND, "Unable to find resource");
+        }
+        SummationTest summationTest  = summationTestResp.get();
         ////-2 try to call cmw rest api and compare the result with expected result of test case
         try {
             CmwSummationResponse response = cmwWebServices.summation(new CmwSummationRequest(summationTest.getSummands()));
@@ -76,12 +86,12 @@ public class SummationTestServiceImpl implements TestCaseService {
                         String.format("Test Failed .Expected Result:%s Actual Result:%s", summationTest.getExpectedResult(), response.getSum().toString()));
             }
         } catch (RestCustomException e) { //as handled Exceptions in cmwWebservices it can throw just this kind of Exception
+            logger.error("runSingleTestCase => exception on calling cmw service for id:{} exception :{} ",id,e);
             summationTest.setErrorMessage(e.getMessage());
             summationTest.setLastTestResult(TestResult.ERROR);
             result.setTestResult(TestResult.ERROR);
             result.setMessage(
                     String.format("Test Faced with an Error. please call Customer service to check cause . Details : %s", e.getMessage()));
-//            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         result.setTestID(summationTest.getId());
         result.setTestName(summationTest.getName());
@@ -104,16 +114,19 @@ public class SummationTestServiceImpl implements TestCaseService {
     @Override
     public ResponseEntity<List<RunTestDto>> runTestSuite(Long id) {
         ////-1  check if test suite Exists
-        TestSuite testSuite = testSuiteRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find test Suite with mentioned Id"));
-        //TODO check if test suite contains zero test case return suitable response to user
+        Optional<TestSuite> testSuiteRep = testSuiteRepository.findById(id);
+        if(!testSuiteRep.isPresent())
+            throw new ResponseStatusException(NOT_FOUND, "Unable to find test Suite with mentioned Id");
+
+        // check if test suite contains zero test case return suitable response to user
+        TestSuite testSuite = testSuiteRep.get();
+        if(testSuite.getSummationTests()==null || testSuite.getSummationTests().isEmpty())
+            throw new ResponseStatusException(NOT_FOUND , "there is no test case for this test suite");
+
         List<RunTestDto> result = new ArrayList<>();
-        //TODO can i use streaming here?
-        for (SummationTest summationTest : testSuite.getSummationTests()) {
-            // call run singleTestCase for each one of tests in test suite
-            RunTestDto runSingleTestResult = this.runSingleTestCase(summationTest.getId()).getBody();
-            result.add(runSingleTestResult);
-        }
+        testSuite.getSummationTests()
+                .forEach((test) -> result.add(this.runSingleTestCase(test.getId()).getBody()));
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 ///--------------------------------------------------------------------------------------------------------------------------
